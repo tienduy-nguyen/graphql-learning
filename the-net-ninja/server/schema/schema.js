@@ -1,3 +1,6 @@
+const Book = require('../models/Book');
+const Author = require('../models/Author');
+
 const {
   graphql,
   GraphQLSchema,
