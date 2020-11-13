@@ -5,6 +5,13 @@ const {
   GraphQLString,
 } = require('graphql');
 
+// dummy data
+var books = [
+  { name: 'Name of the Wind', genre: 'Fantasy', id: '1' },
+  { name: 'The Final Empire', genre: 'Fantasy', id: '2' },
+  { name: 'The Long Earth', genre: 'Sci-Fi', id: '3' },
+];
+
 const BookType = new GraphQLObjectType({
   name: 'Book',
   fields: () => ({
@@ -22,6 +29,9 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLString } }, // argument pass to query, here we use id to find the book
       resolve(parent, args) {
         // code to get data from db / other source
+        const book = books.filter((book) => book.id == args.id)[0];
+        console.log(book);
+        return book;
       },
     },
   },
