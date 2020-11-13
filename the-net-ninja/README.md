@@ -45,7 +45,47 @@ Fullstack project using MongoDB - Express - React - NodeJS and GraphQL
   ```bash
   $ npm run dev
   ```
+## GraphQL
+### Installation GraphQL
+- Install GraphQL
+  ```bash
+  $ npm i graphql express-graphql
+  ```
+- Using `GraphQL` in `index.js` file
+  
+  Check out on [express-grapql](https://github.com/graphql/express-graphql)
 
+### Create Schema
+
+Check out on [GraphQL github](https://github.com/graphql/graphql-js)
+- Create schema
+  ```bash
+  # In root project server
+  $ mkdir schema
+  $ touch schema/schema.js
+  ```
+- Update schema.js for Books
+  ```js
+  const {
+    graphql,
+    GraphQLSchema,
+    GraphQLObjectType,
+    GraphQLString,
+  } = require('graphql');
+
+  const schema = new GraphQLSchema({
+    query: new GraphQLObjectType({
+      name: 'Book',
+      fields: () => ({
+        id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        genre: { type: GraphQLString },
+      }),
+    }),
+  });
+
+
+  ```
 ## Reference
 
 Learn GraphQL by The Net Ninja
