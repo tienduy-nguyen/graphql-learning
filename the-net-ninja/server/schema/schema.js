@@ -6,7 +6,6 @@ const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLID,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
@@ -15,24 +14,17 @@ const {
 const BookType = new GraphQLObjectType({
   name: 'Book',
   fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    id: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     genre: { type: new GraphQLNonNull(GraphQLString) },
-    author: {
-      type: AuthorType,
-      resolve(parent, args) {
-        const author = Author.findById(parent.author);
-        console.log(author);
-        return author;
-      },
-    },
+    authorId: { type: GraphQLString },
   }),
 });
 
 const AuthorType = new GraphQLObjectType({
   name: 'Author',
   fields: () => ({
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    id: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     age: { type: new GraphQLNonNull(GraphQLInt) },
     books: {
@@ -50,7 +42,7 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     book: {
       type: BookType,
-      args: { id: { type: GraphQLID } }, // argument pass to query, here we use id to find the book
+      args: { id: { type: GraphQLString } }, // argument pass to query, here we use id to find the book
       async resolve(parent, args) {
         // code to get data from db / other source
         const book = await Book.findById(args.id);
@@ -59,7 +51,7 @@ const RootQuery = new GraphQLObjectType({
     },
     author: {
       type: AuthorType,
-      args: { id: { type: GraphQLID } },
+      args: { id: { type: GraphQLString } },
       async resolve(parent, args) {
         const author = await Author.findById(args.id);
         return author;
@@ -105,15 +97,13 @@ const Mutation = new GraphQLObjectType({
       args: {
         name: { type: GraphQLString },
         genre: { type: GraphQLString },
-        authorId: { type: GraphQLID },
+        authorId: { type: GraphQLString },
       },
       async resolve(parent, args) {
-        let author = await Author.findById(args.authorId);
-        console.log(author);
         let book = new Book({
           name: args.name,
           genre: args.genre,
-          author: author,
+          authorId: args.authorId,
         });
         const newBook = await book.save();
         return newBook;
