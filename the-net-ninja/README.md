@@ -2,7 +2,18 @@
 
 Fullstack project using MongoDB - Express - React - NodeJS and GraphQL
 
-## Installation
+- [Books list project](#books-list-project)
+  - [Pre-Installation](#pre-installation)
+  - [Setup project](#setup-project)
+  - [GraphQL](#graphql)
+    - [Installation GraphQL](#installation-graphql)
+    - [Create Schema](#create-schema)
+  - [MongoDB](#mongodb)
+  - [Reference](#reference)
+  
+
+
+## Pre-Installation
 - Create `server` folder as a root of project
 - In `server` folder, init `package.json`
   ```bash
