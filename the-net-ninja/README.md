@@ -2,6 +2,12 @@
 
 Fullstack project using MongoDB - Express - React - NodeJS and GraphQL
 
+Demo: 
+
+Server app running at: [graphql-book.herokuapp.com/graphql](https://graphql-book-server.herokuapp.com/graphql)
+
+Client app running at: [graphql-book.netlify.com](http://graphqlbook.netlify.app)
+
 - [Books list project](#books-list-project)
   - [Pre-Installation](#pre-installation)
   - [Setup project](#setup-project)
