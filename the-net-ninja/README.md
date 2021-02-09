@@ -69,6 +69,17 @@ Client app running at: [graphql-book.netlify.com](https://graphql-book.netlify.a
   $ npm i graphql express-graphql
   ```
 - Using `GraphQL` in `index.js` file
+
+  ```js
+  // index.js
+  app.use(
+    '/graphql',
+    graphqlHTTP({
+      schema: schema,
+      graphiql: true,
+    })
+  );
+  ```
   
   Check out on [express-grapql](https://github.com/graphql/express-graphql)
 

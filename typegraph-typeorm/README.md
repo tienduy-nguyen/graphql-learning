@@ -1,0 +1,7 @@
+# GraphQL with Express/TypeScript with TypeGraphQL & TypeORM
+
+
+
+## Reference
+
+- [Ben Award Tuto](https://www.youtube.com/watch?v=8yZImm2A1KE&list=PLN3n1USn4xlma1bBu3Tloe4NyYn9Ko8Gs&index=1&t=1s)
