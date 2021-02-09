@@ -1,0 +1,16 @@
+{
+  "type": "postgres",
+  "name": "default",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "postgres",
+  "database": "net_todo",
+  "entities": ["src/modules/**/*.model.ts"],
+  "logging": true,
+  "synchronize": true,
+  "migrations": ["src/common/migrations/**/*.ts"],
+  "cli": {
+    "migrationsDir": "src/common/migrations"
+  }
+}

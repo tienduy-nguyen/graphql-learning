@@ -32,7 +32,7 @@
     "noEmit": false,
     "baseUrl": ".",
     "paths": {
-      "@resolvers/*": ["src/resolvers/*"],
+      "@modules/*": ["src/modules/*"],
       "@common/*": ["src/common/*"],
       "@app/*": ["src/app/*"],
 

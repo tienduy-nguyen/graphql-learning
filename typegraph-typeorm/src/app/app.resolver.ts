@@ -1,7 +1,7 @@
 import { Arg, Query, Resolver } from 'type-graphql';
 
 @Resolver()
-export class HelloResolver {
+export class AppResolver {
   @Query(() => String)
   public async hello(
     @Arg('name', { nullable: true, defaultValue: 'World!' }) name?: string
