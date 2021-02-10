@@ -4,6 +4,7 @@ import { BadRequestException } from '@common/exceptions';
 import { ClassType } from 'class-transformer/esm2015';
 import { RequestHandler } from 'express';
 
+// Validation with class-validator
 export function validationMiddleware<T>(
   type: ClassType<T>,
   skipMissingProperties = false
