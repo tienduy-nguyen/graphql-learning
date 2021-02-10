@@ -2,12 +2,12 @@ import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import express, { Application } from 'express';
 import { createConnection } from 'typeorm';
-import { appSchema } from '@app/app.schema';
 import cors from 'cors';
 import session from 'express-session';
 import { ormConfig } from '@common/configs/orm.config';
 import { sessionConfig } from '@common/configs/session.config';
 import { errorMiddleware } from '@common/global-middlewares';
+import { apolloServerConfig } from '@common/configs/apollo-server.config';
 
 const bootstrap = async () => {
   // Typeorm connection
@@ -20,11 +20,8 @@ const bootstrap = async () => {
   }
 
   const port = Number(process.env.PORT) || 3000;
-  const schema = await appSchema();
-  const apolloServer = new ApolloServer({
-    schema,
-    context: ({ req }: any) => ({ req }),
-  });
+
+  const apolloServer = new ApolloServer(await apolloServerConfig());
 
   const app: Application = express();
   app.use(express.json());

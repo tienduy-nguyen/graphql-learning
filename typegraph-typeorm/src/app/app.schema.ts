@@ -1,4 +1,4 @@
-import { UserResolver } from '@modules/user/user.resolver';
+import { UserResolver } from '@modules/user/resolvers/user.resolver';
 import { buildSchema } from 'type-graphql';
 import { AppResolver } from './app.resolver';
 
