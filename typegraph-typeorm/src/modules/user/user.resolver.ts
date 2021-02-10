@@ -12,6 +12,11 @@ import bcrypt from 'bcrypt';
 import { IHttpContext } from '@common/global-interfaces/http.interface';
 import { isAuth } from './middlewares/auth.middleware';
 import { logger } from '@common/global-middlewares/logger.middleware';
+import { redis } from '@common/configs/redis';
+import { BadRequestException } from '@common/exceptions';
+import { sendMail } from '@modules/email/send-email';
+import { createConfirmationUrl } from '@modules/email/create-confirmation-url';
+import { ResendRegisterTokenInput } from './dto/resend-register-token.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -45,6 +50,8 @@ export class UserResolver {
       ...data,
       password: hashedPassword,
     }).save();
+
+    await sendMail(data.email, await createConfirmationUrl(user.id));
     return user;
   }
 
@@ -57,12 +64,38 @@ export class UserResolver {
       email: data.email,
     };
     const user = await User.findOneOrFail({ where });
-    if (!user) return null;
+    if (!user) throw new BadRequestException('Invalid credentials');
     const valid = await bcrypt.compare(data.password, (await user).password);
-    if (!valid) return null;
+    if (!valid) throw new BadRequestException('Invalid credentials');
+
+    if (!user.confirmed) {
+      throw new BadRequestException('Email is not confirmed');
+    }
 
     ctx.req.session!.userId = user.id;
 
+    return user;
+  }
+
+  @Mutation(() => Boolean)
+  public async confirmUser(@Arg('token') token: string): Promise<boolean> {
+    const userId = await redis.get(token);
+    if (!userId) {
+      return false;
+    }
+    await User.update({ id: userId }, { confirmed: true });
+    await redis.del(token);
+
+    return true;
+  }
+
+  @Mutation(() => User)
+  public async resendRegisterToken(
+    @Arg('data') data: ResendRegisterTokenInput
+  ) {
+    const user = await User.findOneOrFail({ where: { email: data.email } });
+    if (!user) throw new BadRequestException('Email do not exist');
+    await sendMail(data.email, await createConfirmationUrl(user.id));
     return user;
   }
 }

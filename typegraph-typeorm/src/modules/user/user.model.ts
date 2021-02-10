@@ -32,6 +32,9 @@ export class User extends BaseEntity {
   @Exclude()
   password: string;
 
+  @Column('bool', { default: false })
+  confirmed: boolean;
+
   @Field()
   fullName(@Root() parent: User): string {
     const { firstName, lastName } = parent;
