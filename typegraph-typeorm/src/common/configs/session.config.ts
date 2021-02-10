@@ -1,3 +1,4 @@
+import { REDIS_KEY_SESSION } from '@common/constants/redis.constant';
 import connectRedis from 'connect-redis';
 import session from 'express-session';
 import Redis from 'ioredis';
@@ -9,7 +10,7 @@ export const sessionConfig = () => {
     store: new RedisStore({
       client: redis as any,
     }),
-    name: 'authRedisId',
+    name: REDIS_KEY_SESSION,
     secret: 'someVeryStrongSecret',
     resave: false,
     saveUninitialized: false,

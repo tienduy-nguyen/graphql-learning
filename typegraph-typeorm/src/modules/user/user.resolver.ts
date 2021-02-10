@@ -17,7 +17,10 @@ import { BadRequestException, NotFoundException } from '@common/exceptions';
 import { sendMail } from '@modules/email/send-email';
 import { createConfirmationUrl } from '@modules/email/create-confirmation-url';
 import { ResendRegisterTokenInput } from './dto/resend-register-token.input';
-import { REDIS_FORGOT_PASSWORD_PREFIX } from '@common/constants/redis.constant';
+import {
+  REDIS_FORGOT_PASSWORD_PREFIX,
+  REDIS_KEY_SESSION,
+} from '@common/constants/redis.constant';
 import { v4 as uuid } from 'uuid';
 import { ChangePasswordInput } from './dto/change-password.input';
 
@@ -142,5 +145,17 @@ export class UserResolver {
     await user.save();
     ctx.req.session!.userId = user.id;
     return user;
+  }
+
+  @Mutation(() => Boolean)
+  public async logout(@Ctx() ctx: IHttpContext): Promise<Boolean> {
+    try {
+      ctx.req.res?.clearCookie(REDIS_KEY_SESSION);
+      await ctx.req.session!.destroy();
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }

@@ -3,6 +3,7 @@ import { Response } from 'express';
 
 export interface IHttpContext {
   req?: IRequestWithUser;
+  res?: Response;
 }
 export interface IRequestWithUser {
   session?: any;
