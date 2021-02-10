@@ -7,6 +7,7 @@ import cors from 'cors';
 import session from 'express-session';
 import { ormConfig } from '@common/configs/orm.config';
 import { sessionConfig } from '@common/configs/session.config';
+import { errorMiddleware } from '@common/global-middlewares';
 
 const bootstrap = async () => {
   // Typeorm connection
@@ -37,6 +38,7 @@ const bootstrap = async () => {
   app.use(session(sessionOptions));
 
   apolloServer.applyMiddleware({ app });
+  app.use(errorMiddleware);
 
   app.listen(port, () => {
     console.log(
@@ -45,4 +47,4 @@ const bootstrap = async () => {
   });
 };
 
-bootstrap();
+Promise.resolve(bootstrap());

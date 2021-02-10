@@ -9,5 +9,5 @@ export const appSchema = async () => {
       return !!req.session.userId;
     },
   });
-  return schemas;
+  return Promise.resolve(schemas);
 };
