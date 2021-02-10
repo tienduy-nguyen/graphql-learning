@@ -6,23 +6,27 @@ import {
   Resolver,
   UseMiddleware,
 } from 'type-graphql';
-import { LoginUserInput, RegisterUserInput, UserWhereUniqueInput } from './dto';
-import { User } from './user.model';
+import {
+  LoginUserInput,
+  RegisterUserInput,
+  UserWhereUniqueInput,
+} from '../dto';
+import { User } from '../user.model';
 import bcrypt from 'bcrypt';
 import { IHttpContext } from '@common/global-interfaces/http.interface';
-import { isAuth } from './middlewares/auth.middleware';
+import { isAuth } from '../middlewares/auth.middleware';
 import { logger } from '@common/global-middlewares/logger.middleware';
 import { redis } from '@common/configs/redis';
 import { BadRequestException, NotFoundException } from '@common/exceptions';
 import { sendMail } from '@modules/email/send-email';
 import { createConfirmationUrl } from '@modules/email/create-confirmation-url';
-import { ResendRegisterTokenInput } from './dto/resend-register-token.input';
+import { ResendRegisterTokenInput } from '../dto/resend-register-token.input';
 import {
   REDIS_FORGOT_PASSWORD_PREFIX,
   REDIS_KEY_SESSION,
 } from '@common/constants/redis.constant';
 import { v4 as uuid } from 'uuid';
-import { ChangePasswordInput } from './dto/change-password.input';
+import { ChangePasswordInput } from '../dto/change-password.input';
 
 @Resolver(() => User)
 export class UserResolver {
