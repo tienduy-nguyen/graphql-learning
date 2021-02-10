@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 export class UserResolver {
   @Query(() => User)
   public async user(@Arg('where') where: UserWhereUniqueInput) {
-    return User.findOne({ where });
+    return User.findOneOrFail({ where });
   }
 
   /* Mutations */
