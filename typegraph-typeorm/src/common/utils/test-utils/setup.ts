@@ -1,3 +1,4 @@
-import { createConnectionTesting } from './create-connection-testing';
+import { createConnection } from 'typeorm';
+import { ormTestConfig } from '../../configs/orm-test.config';
 
-createConnectionTesting(true).then(() => process.exit());
+createConnection(ormTestConfig(true)).then(() => process.exit());

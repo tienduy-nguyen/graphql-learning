@@ -1,11 +1,12 @@
-import { createConnectionTesting } from '@common/utils/test-utils/create-connection-testing';
 import faker from 'faker';
 import { User } from '../user.model';
 import { gCall } from '@common/utils/test-utils/g-call';
+import { Connection, createConnection } from 'typeorm';
+import { ormTestConfig } from '@common/configs/orm-test.config';
 
-let conn;
+let conn: Connection;
 beforeAll(async () => {
-  conn = await createConnectionTesting();
+  conn = await createConnection(ormTestConfig());
 });
 afterAll(async () => {
   await conn.close();
@@ -26,9 +27,10 @@ const meQuery = `
 describe('Me', () => {
   it('get user', async () => {
     const user = await User.create({
+      username: faker.name.firstName(),
+      email: faker.internet.email(),
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
-      email: faker.internet.email(),
       password: faker.internet.password(),
     }).save();
 
@@ -55,9 +57,7 @@ describe('Me', () => {
     });
 
     expect(response).toMatchObject({
-      data: {
-        me: null,
-      },
+      data: null,
     });
   });
 });

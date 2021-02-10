@@ -1,7 +1,5 @@
-import { createConnection } from 'typeorm';
-
-export const createConnectionTesting = async (drop: boolean = false) => {
-  return await createConnection({
+export function ormTestConfig(drop: boolean = false): any {
+  return {
     type: 'postgres',
     name: 'default',
     host: 'postgres',
@@ -12,6 +10,6 @@ export const createConnectionTesting = async (drop: boolean = false) => {
     entities: ['src/modules/**/*.model.ts'],
     logging: false,
     synchronize: drop,
-    dropSchema: drop,
-  });
-};
+    drop: drop,
+  };
+}
