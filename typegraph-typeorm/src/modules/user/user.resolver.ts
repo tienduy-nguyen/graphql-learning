@@ -1,25 +1,36 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from 'type-graphql';
 import { LoginUserInput, RegisterUserInput, UserWhereUniqueInput } from './dto';
 import { User } from './user.model';
 import bcrypt from 'bcrypt';
 import { IHttpContext } from '@common/global-interfaces/http.interface';
+import { isAuth } from './middlewares/auth.middleware';
+import { logger } from '@common/global-middlewares/logger.middleware';
 
 @Resolver(() => User)
 export class UserResolver {
+  @UseMiddleware(isAuth, logger)
   @Query(() => [User])
   public async users() {
     return await User.find();
   }
 
+  @UseMiddleware(isAuth, logger)
   @Query(() => User)
   public async user(@Arg('where') where: UserWhereUniqueInput) {
     return await User.findOneOrFail({ where });
   }
 
+  @UseMiddleware(isAuth, logger)
   @Query(() => User)
   public async me(@Ctx() ctx: IHttpContext) {
     const userId = ctx.req.session!.userId;
-    console.log('----------------------', userId);
     if (!userId) {
       return undefined;
     }
