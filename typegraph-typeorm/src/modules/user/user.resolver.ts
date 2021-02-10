@@ -13,10 +13,13 @@ import { IHttpContext } from '@common/global-interfaces/http.interface';
 import { isAuth } from './middlewares/auth.middleware';
 import { logger } from '@common/global-middlewares/logger.middleware';
 import { redis } from '@common/configs/redis';
-import { BadRequestException } from '@common/exceptions';
+import { BadRequestException, NotFoundException } from '@common/exceptions';
 import { sendMail } from '@modules/email/send-email';
 import { createConfirmationUrl } from '@modules/email/create-confirmation-url';
 import { ResendRegisterTokenInput } from './dto/resend-register-token.input';
+import { REDIS_FORGOT_PASSWORD_PREFIX } from '@common/constants/redis.constant';
+import { v4 as uuid } from 'uuid';
+import { ChangePasswordInput } from './dto/change-password.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -89,13 +92,55 @@ export class UserResolver {
     return true;
   }
 
-  @Mutation(() => User)
+  @Mutation(() => Boolean)
   public async resendRegisterToken(
     @Arg('data') data: ResendRegisterTokenInput
   ) {
     const user = await User.findOneOrFail({ where: { email: data.email } });
     if (!user) throw new BadRequestException('Email do not exist');
     await sendMail(data.email, await createConfirmationUrl(user.id));
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  public async forgotPassword(@Arg('email') email: string) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const token = uuid();
+    await redis.set(
+      REDIS_FORGOT_PASSWORD_PREFIX + token,
+      user.id,
+      'ex',
+      60 * 60 * 24
+    );
+    await sendMail(email, `http://localhost:3000/change-password/${token}`);
+    return true;
+  }
+
+  @Mutation(() => User)
+  public async changePassword(
+    @Arg('data') { token, oldPassword, newPassword }: ChangePasswordInput,
+    @Ctx() ctx: IHttpContext
+  ) {
+    const userId = await redis.get(REDIS_FORGOT_PASSWORD_PREFIX + token);
+    if (!userId) {
+      throw new BadRequestException('Token not valid');
+    }
+    const user = await User.findOneOrFail(userId);
+    if (!user) {
+      throw new NotFoundException('User not found with given token');
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) throw new BadRequestException('Old password is not matches');
+
+    await redis.del(REDIS_FORGOT_PASSWORD_PREFIX + token);
+
+    user.password = await bcrypt.hash(newPassword, 12);
+    await user.save();
+    ctx.req.session!.userId = user.id;
     return user;
   }
 }
